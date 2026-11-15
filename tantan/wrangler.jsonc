@@ -1,6 +1,6 @@
 {
   // ⚠ name 必須和你在 Cloudflare 上那個 Worker 的名稱完全一致，否則會另外建立一個新的
-  "name": "請改成你的Worker名稱",
+  "name": "tantan",
   "main": "worker.js",
   "compatibility_date": "2026-11-01",
   "assets": {
