@@ -51,7 +51,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* ========== 右：聊天區 ========== */
 .chat{display:flex;flex-direction:column;min-width:0;height:100dvh}
 .top{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--bg)}
-.top h2{font-size:16px;font-weight:600;flex:1}
+.top h2{font-size:16px;font-weight:600;flex:none}
+.top{flex-wrap:wrap;row-gap:8px}
+.play{border:1px solid var(--orange);background:rgba(232,135,69,.12);color:var(--text);border-radius:20px;padding:5px 14px;font-size:13px;font-weight:600;transition:.15s}
+#gameLink{color:var(--accent-text);word-break:break-all;font-size:13px}
+.play:hover{background:var(--grad);border-color:transparent;color:#fff}.play:active{transform:scale(.97)}
 .ghost{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--muted);transition:.15s}
 .ghost:hover{border-color:var(--orange);color:var(--text)}
 .ghost:active{transform:scale(.97)}
@@ -117,6 +121,7 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
 @media(pointer:coarse){.chip{padding:11px 16px}.ghost{padding:10px 14px}.copy,.x{width:40px;height:40px}}
 /* ========== 手機／平板：角色區縮成橫條 ========== */
 @media(max-width:860px){
+  .top .ghost{padding:6px 10px}
   .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .stage{flex-direction:row;justify-content:flex-start;gap:14px;padding:10px 16px;text-align:left}
   .stage::after{top:auto;left:0;right:0;bottom:0;width:auto;height:6px;background:repeating-linear-gradient(90deg,var(--orange) 0 2px,transparent 2px 7px)}
@@ -166,6 +171,8 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
   <main class="chat">
     <header class="top">
       <h2>毯毯｜地毯清潔 AI 助理</h2>
+      <button class="play" id="playBtn" aria-label="開始遊戲（在新分頁開啟）">開始遊戲 ↗</button>
+      <span style="flex:1"></span>
       <button class="ghost" id="clearBtn">清除對話</button>
       <button class="ghost" id="themeTop"></button>
       <button class="ghost" id="setBtn">設定</button>
@@ -180,6 +187,15 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
     </div>
   </main>
 </div>
+
+<!-- 開始遊戲：QR Code 視窗 -->
+<dialog id="qrDlg" aria-labelledby="qrTitle" style="width:min(340px,92vw);text-align:center">
+  <button class="x" id="qrClose" aria-label="關閉">×</button>
+  <h3 id="qrTitle">開始玩遊戲</h3>
+  <p class="note">遊戲已在新分頁開啟。想用手機玩？掃描下方 QR Code：</p>
+  <div style="background:#fff;padding:12px;border-radius:12px;display:inline-block;line-height:0"><svg style="width:220px;height:220px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" role="img" aria-label="遊戲網址的 QR Code" class="segno"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#000" d="M2 2.5h7m2 0h1m1 0h4m1 0h2m1 0h2m1 0h7m-29 1h1m5 0h1m1 0h3m1 0h1m1 0h2m2 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h2m3 0h1m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h2m2 0h3m4 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h1m1 0h2m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m5 0h1m1 0h2m1 0h1m1 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h1m4 0h2m1 0h2m-20 1h3m1 0h2m3 0h1m1 0h8m6 0h2m-25 1h1m3 0h1m1 0h1m3 0h1m1 0h2m2 0h8m1 0h1m-29 1h8m2 0h1m2 0h3m6 0h1m1 0h1m2 0h1m-28 1h1m4 0h1m2 0h1m5 0h1m13 0h1m-24 1h2m1 0h1m1 0h1m4 0h3m2 0h2m1 0h1m2 0h3m-28 1h5m3 0h1m1 0h3m2 0h2m1 0h1m2 0h2m1 0h2m1 0h1m-29 1h1m1 0h1m2 0h2m2 0h2m1 0h1m3 0h1m2 0h3m1 0h3m1 0h2m-28 1h1m3 0h1m1 0h5m1 0h1m1 0h1m2 0h1m3 0h1m1 0h2m-23 1h1m2 0h2m1 0h2m3 0h1m3 0h1m1 0h2m1 0h3m1 0h1m-27 1h1m1 0h3m2 0h2m1 0h2m3 0h2m2 0h1m2 0h1m-24 1h1m1 0h1m1 0h4m2 0h3m1 0h2m2 0h1m1 0h1m1 0h1m2 0h2m-23 1h1m6 0h1m2 0h1m2 0h3m1 0h2m1 0h5m-28 1h3m2 0h2m5 0h1m2 0h2m2 0h8m-20 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m-29 1h7m2 0h3m1 0h2m2 0h4m1 0h1m1 0h1m1 0h2m-28 1h1m5 0h1m1 0h4m1 0h2m3 0h1m1 0h1m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m3 0h2m5 0h1m2 0h7m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m2 0h3m4 0h2m4 0h4m-28 1h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m4 0h1m-29 1h1m5 0h1m1 0h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h1m1 0h1m2 0h1m-28 1h7m2 0h1m2 0h1m5 0h1m1 0h2m1 0h1m3 0h1"/></svg></div>
+  <p class="note" style="margin-top:12px">沒有跳出新分頁？可能被瀏覽器擋下，請點：<br><a id="gameLink" target="_blank" rel="noopener"></a></p>
+</dialog>
 
 <!-- 設定視窗 -->
 <dialog id="dlg" aria-labelledby="dlgTitle">
@@ -227,6 +243,9 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
 // 以「檔案」方式開啟（file://）時，沒有網站網域可用，請填你部署後的網址，例如 "https://tantan.pages.dev"
 // 部署在網站上時不需要填（網頁會自動呼叫同一個網站的 /v1，金鑰只存在伺服器端）
 const PROXY_ORIGIN = "";
+
+// 遊戲網址。若更換網址，下方 QR Code（寫在 id="qrDlg" 的 SVG）也要重新產生
+const GAME_URL = "https://asobi-lounge.com/carpet";
 
 const DEFAULT_CONFIG = {
   provider: "proxy",                   // "proxy"（線上中轉，預設）、"chatpdf"（直連）或 "openai"
@@ -510,6 +529,19 @@ $("cFile").onchange=async e=>{
   try{ const id=await uploadPdf(f); $("cSource").value=id; CONFIG.chatpdf.sourceId=id; saveConfig(); out.textContent="上傳成功，Source ID 已填入並儲存："+id; }
   catch(err){ out.textContent="上傳失敗：\n"+err.message+"\n（也可以到 chatpdf.com 手動上傳，再把網址中的 ID 加上 cha_ 前綴貼進來）"; }
 };
+
+/* ---------- 開始遊戲：新分頁開啟 + QR Code ---------- */
+const qrDlg=$("qrDlg"), gameLink=$("gameLink");
+gameLink.href=GAME_URL; gameLink.textContent=GAME_URL;
+$("playBtn").onclick=()=>{
+  window.open(GAME_URL,"_blank","noopener");   // 另開分頁，目前的聊天頁面不會被取代
+  qrDlg.showModal();                           // 回到這個分頁時，可看到 QR Code 供手機掃描
+};
+$("qrClose").onclick=()=>qrDlg.close();
+qrDlg.addEventListener("click",e=>{            // 點視窗外的空白處關閉
+  const r=qrDlg.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) qrDlg.close();
+});
 
 /* ---------- 啟動 ---------- */
 $("portrait").innerHTML = CONFIG.characterImage
