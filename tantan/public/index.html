@@ -35,7 +35,21 @@ button{font:inherit;color:inherit;cursor:pointer}
 .stage::after{content:"";position:absolute;right:0;top:0;bottom:0;width:12px;
   background:repeating-linear-gradient(180deg,var(--orange) 0 2px,transparent 2px 7px);opacity:.55}
 .portrait{width:min(300px,70%);aspect-ratio:3/4;display:grid;place-items:end center;animation:float 5s ease-in-out infinite}
+.portrait{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;outline-offset:8px;border-radius:20px}
+.pet{width:100%;height:100%;display:grid;place-items:end center;transform-origin:50% 100%}
 .portrait svg,.portrait img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
+.pet.custom img{object-fit:cover;border-radius:22px;border:2px solid rgba(232,135,69,.6)}
+.pet.pat{animation:pat .6s cubic-bezier(.3,.7,.4,1)}
+@keyframes pat{0%{transform:none}22%{transform:translateY(8px) scale(1.05,.92)}50%{transform:translateY(-16px) scale(.97,1.05)}72%{transform:translateY(3px) scale(1.02,.98)}100%{transform:none}}
+.bubble{position:absolute;left:50%;top:6px;transform:translate(-50%,6px);background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:6px 12px;font-size:13px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s;z-index:2}
+.bubble.show{opacity:1;transform:translate(-50%,0)}
+.heart{position:absolute;pointer-events:none;color:var(--orange);font-size:18px;line-height:1;animation:up 1s ease-out forwards;z-index:2}
+@keyframes up{to{transform:translateY(-70px) scale(1.3);opacity:0}}
+.hintpet{margin-top:6px;font-size:12px;color:var(--muted)}
+.imgprev{width:120px;aspect-ratio:3/4;margin:8px auto;border-radius:16px;overflow:hidden;background:var(--bg);border:1px solid var(--line)}
+.imgprev svg,.imgprev img{width:100%;height:100%;object-fit:contain}
+.imgprev.custom img{object-fit:cover}
+.av img{object-position:50% 20%}
 @keyframes float{50%{transform:translateY(-8px)}}
 .stage .tx{text-align:center}
 .stage h1{font:700 44px/1.1 var(--serif);margin-top:18px;letter-spacing:.12em}
@@ -122,6 +136,7 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
 /* ========== 手機／平板：角色區縮成橫條 ========== */
 @media(max-width:860px){
   .top .ghost{padding:6px 10px}
+  .bubble,.hintpet{display:none}
   .app{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .stage{flex-direction:row;justify-content:flex-start;gap:14px;padding:10px 16px;text-align:left}
   .stage::after{top:auto;left:0;right:0;bottom:0;width:auto;height:6px;background:repeating-linear-gradient(90deg,var(--orange) 0 2px,transparent 2px 7px)}
@@ -160,10 +175,11 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
 <div class="app" id="app">
   <!-- 左：角色展示區 -->
   <aside class="stage">
-    <div class="portrait" id="portrait"></div>
+    <div class="portrait" id="portrait" role="button" tabindex="0" aria-label="摸摸毯毯的頭" title="摸摸頭"><div class="pet" id="pet"></div><div class="bubble" id="bubble" role="status"></div></div>
     <div class="tx"><h1>毯毯</h1><div class="sub">Carpet Care Assistant</div></div>
     <p class="intro">熟悉洗地毯的每一道工序：從除塵、污漬辨識到黑光燈驗收，陪你把髒毯子洗回原本的花紋。</p>
     <p class="quote">先別急著刷，讓我看看污漬的狀態。我們一步一步處理，才不會把地毯越洗越糟。</p>
+    <div class="hintpet">點點看，摸摸毯毯的頭</div>
     <div class="status"><span class="dot"></span><span id="statusTx">線上服務中</span></div>
   </aside>
 
@@ -174,6 +190,7 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
       <button class="play" id="playBtn" aria-label="開始遊戲（在新分頁開啟）">開始遊戲 ↗</button>
       <span style="flex:1"></span>
       <button class="ghost" id="clearBtn">清除對話</button>
+      <button class="ghost" id="imgBtn">更換角色圖片</button>
       <button class="ghost" id="themeTop"></button>
       <button class="ghost" id="setBtn">設定</button>
     </header>
@@ -195,6 +212,20 @@ dialog textarea{max-height:none;min-height:90px;resize:vertical}
   <p class="note">遊戲已在新分頁開啟。想用手機玩？掃描下方 QR Code：</p>
   <div style="background:#fff;padding:12px;border-radius:12px;display:inline-block;line-height:0"><svg style="width:220px;height:220px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33" role="img" aria-label="遊戲網址的 QR Code" class="segno"><path fill="#fff" d="M0 0h33v33h-33z"/><path class="qrline" stroke="#000" d="M2 2.5h7m2 0h1m1 0h4m1 0h2m1 0h2m1 0h7m-29 1h1m5 0h1m1 0h3m1 0h1m1 0h2m2 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h2m3 0h1m2 0h2m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h2m2 0h3m4 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h1m1 0h2m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m5 0h1m1 0h2m1 0h1m1 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h1m4 0h2m1 0h2m-20 1h3m1 0h2m3 0h1m1 0h8m6 0h2m-25 1h1m3 0h1m1 0h1m3 0h1m1 0h2m2 0h8m1 0h1m-29 1h8m2 0h1m2 0h3m6 0h1m1 0h1m2 0h1m-28 1h1m4 0h1m2 0h1m5 0h1m13 0h1m-24 1h2m1 0h1m1 0h1m4 0h3m2 0h2m1 0h1m2 0h3m-28 1h5m3 0h1m1 0h3m2 0h2m1 0h1m2 0h2m1 0h2m1 0h1m-29 1h1m1 0h1m2 0h2m2 0h2m1 0h1m3 0h1m2 0h3m1 0h3m1 0h2m-28 1h1m3 0h1m1 0h5m1 0h1m1 0h1m2 0h1m3 0h1m1 0h2m-23 1h1m2 0h2m1 0h2m3 0h1m3 0h1m1 0h2m1 0h3m1 0h1m-27 1h1m1 0h3m2 0h2m1 0h2m3 0h2m2 0h1m2 0h1m-24 1h1m1 0h1m1 0h4m2 0h3m1 0h2m2 0h1m1 0h1m1 0h1m2 0h2m-23 1h1m6 0h1m2 0h1m2 0h3m1 0h2m1 0h5m-28 1h3m2 0h2m5 0h1m2 0h2m2 0h8m-20 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m-29 1h7m2 0h3m1 0h2m2 0h4m1 0h1m1 0h1m1 0h2m-28 1h1m5 0h1m1 0h4m1 0h2m3 0h1m1 0h1m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m3 0h2m5 0h1m2 0h7m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m2 0h3m4 0h2m4 0h4m-28 1h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m4 0h1m-29 1h1m5 0h1m1 0h1m1 0h1m1 0h2m1 0h2m3 0h1m1 0h1m1 0h1m2 0h1m-28 1h7m2 0h1m2 0h1m5 0h1m1 0h2m1 0h1m3 0h1"/></svg></div>
   <p class="note" style="margin-top:12px">沒有跳出新分頁？可能被瀏覽器擋下，請點：<br><a id="gameLink" target="_blank" rel="noopener"></a></p>
+</dialog>
+
+<!-- 更換角色圖片視窗 -->
+<dialog id="imgDlg" aria-labelledby="imgTitle" style="width:min(400px,92vw);text-align:center">
+  <button class="x" id="imgClose" aria-label="關閉">×</button>
+  <h3 id="imgTitle">更換角色圖片</h3>
+  <p class="note">選一張你喜歡的圖片當作毯毯的樣子，左側角色與對話裡的小頭像會一起換。圖片只存在你自己的瀏覽器，不會上傳到任何地方。</p>
+  <div class="imgprev" id="imgPrev"></div>
+  <input type="file" id="imgFile" accept="image/*" hidden>
+  <div class="acts" style="justify-content:center">
+    <button class="send" id="imgPick">選擇圖片</button>
+    <button class="ghost" id="imgReset">還原預設角色</button>
+  </div>
+  <p class="note" id="imgMsg" role="status" style="margin-top:12px">電腦可選檔案；手機可選相簿或直接拍照。支援 JPG、PNG、WebP，上限 20 MB。</p>
 </dialog>
 
 <!-- 設定視窗 -->
@@ -376,7 +407,8 @@ const $ = id => document.getElementById(id);
 const msgsEl=$("msgs"), input=$("input"), sendBtn=$("sendBtn");
 let history = [], busy = false;
 
-const avatarHTML = () => CONFIG.characterImage
+const avatarHTML = () => (typeof charImg!=="undefined" && charImg) ? `<img src="${charImg.url}" alt="">`
+  : CONFIG.characterImage
   ? `<img src="${CONFIG.characterImage}" alt="">`
   : `<svg viewBox="0 0 200 200" aria-hidden="true"><use href="#face"/></svg>`;
 
@@ -543,10 +575,8 @@ qrDlg.addEventListener("click",e=>{            // 點視窗外的空白處關閉
   if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) qrDlg.close();
 });
 
-/* ---------- 啟動 ---------- */
-$("portrait").innerHTML = CONFIG.characterImage
-  ? `<img src="${CONFIG.characterImage}" alt="毯毯">`
-  : `<svg viewBox="0 0 200 260" role="img" aria-label="毯毯">
+/* ---------- 角色圖片：預設立繪、自訂圖片、套用到所有頭像 ---------- */
+const DEFAULT_PORTRAIT = `<svg viewBox="0 0 200 260" aria-hidden="true">
       <path d="M52 250c0-62 20-98 48-98s48 36 48 98z" fill="#E88745"/>
       <path d="M72 250v-58h56v58z" fill="#C84B3A"/>
       <rect x="84" y="206" width="32" height="22" rx="4" fill="#171717" opacity=".35"/>
@@ -555,6 +585,98 @@ $("portrait").innerHTML = CONFIG.characterImage
       <circle cx="176" cy="112" r="6" fill="#9fd8e8" opacity=".8"/><circle cx="190" cy="98" r="4" fill="#9fd8e8" opacity=".6"/>
       <g transform="translate(0,6) scale(1) translate(0,-14)"><svg x="0" y="0" width="200" height="200" viewBox="0 0 200 200"><use href="#face"/></svg></g>
     </svg>`;
+const CHAR_KEY = "tantan_char_v1";
+let charImg = null;   // { url, cutout } ；cutout=true 代表帶透明背景的去背圖
+try{ charImg = JSON.parse(localStorage.getItem(CHAR_KEY) || "null"); }catch(e){}
+
+function petHTML(){
+  if(charImg) return `<img src="${charImg.url}" alt="">`;
+  if(CONFIG.characterImage) return `<img src="${CONFIG.characterImage}" alt="">`;
+  return DEFAULT_PORTRAIT;
+}
+// 把目前的角色圖套用到：左側角色（手機為頂端橫條）、所有對話小頭像、設定視窗預覽
+function renderPet(){
+  const custom = !!(charImg && !charImg.cutout);
+  $("pet").innerHTML = petHTML(); $("pet").classList.toggle("custom", custom);
+  const prev=$("imgPrev"); prev.innerHTML = petHTML(); prev.classList.toggle("custom", custom);
+  document.querySelectorAll(".av").forEach(a=>a.innerHTML=avatarHTML());
+}
+
+/* 讀取圖片 → 縮小 → 存成適合的格式。
+ * 一般照片：裁成 3:4（偏上取景，臉通常在上半部），輸出 JPEG
+ * 去背圖（PNG/WebP 帶透明）：完整保留不裁切，輸出 WebP/PNG */
+async function processImage(file){
+  if(!file.type.startsWith("image/")) throw new Error("請選擇圖片檔（JPG、PNG、WebP 等）。");
+  if(file.size > 20*1024*1024) throw new Error("圖片超過 20 MB，請換一張小一點的。");
+  let src, w, h;
+  try{ src = await createImageBitmap(file,{imageOrientation:"from-image"}); w=src.width; h=src.height; }
+  catch(e){
+    src = await new Promise((ok,no)=>{ const im=new Image(), u=URL.createObjectURL(file);
+      im.onload=()=>ok(im); im.onerror=()=>no(new Error("無法讀取這張圖片，可能是不支援的格式，請換 JPG 或 PNG。")); im.src=u; });
+    w=src.naturalWidth; h=src.naturalHeight;
+  }
+  if(!w||!h) throw new Error("無法讀取這張圖片。");
+  // 偵測是否帶透明背景
+  const t=document.createElement("canvas"); t.width=t.height=64; const tx=t.getContext("2d");
+  tx.drawImage(src,0,0,64,64); const d=tx.getImageData(0,0,64,64).data; let clear=0;
+  for(let i=3;i<d.length;i+=4) if(d[i]<200) clear++;
+  const hasAlpha = clear > 64*64*0.03;
+  const c=document.createElement("canvas"); c.width=480; c.height=640; const x=c.getContext("2d");
+  if(hasAlpha){
+    const k=Math.min(480/w,640/h), dw=w*k, dh=h*k;
+    x.drawImage(src,(480-dw)/2,(640-dh)/2,dw,dh);
+    let url=c.toDataURL("image/webp",0.9); if(!url.startsWith("data:image/webp")) url=c.toDataURL("image/png");
+    return {url,cutout:true};
+  }
+  let sw,sh,sx,sy;
+  if(w/h > 3/4){ sh=h; sw=h*3/4; sx=(w-sw)/2; sy=0; } else { sw=w; sh=w*4/3; sx=0; sy=(h-sh)*0.25; }
+  x.drawImage(src,sx,sy,sw,sh,0,0,480,640);
+  return {url:c.toDataURL("image/jpeg",0.88),cutout:false};
+}
+
+const imgDlg=$("imgDlg"), imgMsg=$("imgMsg");
+$("imgBtn").onclick=()=>{ renderPet(); imgDlg.showModal(); };
+$("imgClose").onclick=()=>imgDlg.close();
+imgDlg.addEventListener("click",e=>{
+  const r=imgDlg.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) imgDlg.close();
+});
+$("imgPick").onclick=()=>$("imgFile").click();
+$("imgFile").onchange=async e=>{
+  const f=e.target.files[0]; e.target.value=""; if(!f) return;
+  imgMsg.textContent="處理中…";
+  try{
+    charImg = await processImage(f); renderPet();
+    try{ localStorage.setItem(CHAR_KEY, JSON.stringify(charImg)); imgMsg.textContent="換好了！可以點一下左邊的角色，摸摸新的毯毯。"; }
+    catch(err){ imgMsg.textContent="已套用，但圖片太大無法保存，重新整理後會還原成預設角色。"; }
+  }catch(err){ imgMsg.textContent = err.message || "換圖失敗，請換一張圖片再試。"; }
+};
+$("imgReset").onclick=()=>{
+  charImg=null; try{localStorage.removeItem(CHAR_KEY);}catch(e){}
+  renderPet(); imgMsg.textContent="已還原成預設的毯毯。";
+};
+
+/* ---------- 摸摸頭：點擊角色會彈跳、冒出愛心與一句話 ---------- */
+const PAT_LINES=["嘿嘿，謝謝你。","有點癢～","先別急著摸，污漬還在等我們呢。","好啦，我們繼續處理地毯吧。"];
+let bubbleTimer;
+function pat(e){
+  const pet=$("pet"), box=$("portrait"), reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  pet.classList.remove("pat"); void pet.offsetWidth; pet.classList.add("pat");
+  if(!reduce){
+    const r=box.getBoundingClientRect(), hx=document.createElement("span");
+    hx.className="heart"; hx.textContent="♥";
+    hx.style.left=((e&&e.clientX?e.clientX-r.left:r.width/2)-8)+"px";
+    hx.style.top=((e&&e.clientY?e.clientY-r.top:r.height*0.25)-8)+"px";
+    box.appendChild(hx); setTimeout(()=>hx.remove(),1000);
+  }
+  const b=$("bubble"); b.textContent=PAT_LINES[Math.floor(Math.random()*PAT_LINES.length)];
+  b.classList.add("show"); clearTimeout(bubbleTimer); bubbleTimer=setTimeout(()=>b.classList.remove("show"),1800);
+}
+$("portrait").addEventListener("click",pat);
+$("portrait").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pat(null); } });
+
+/* ---------- 啟動 ---------- */
+renderPet();
 renderStart(); fitInput();
 </script>
 </body>
